@@ -1,22 +1,42 @@
 // src/components/student/StudentSubjectsPage.jsx
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../shared/Header';
 import StudentSidebar from '../shared/StudentSidebar';
-import { createStudentExamples, createSubjectExamples } from '../../models/Models';
+import { useAuth } from '../../context/AuthContext';
+import { subjectsApi } from '../../api/subjects';
+import { gradesApi } from '../../api/grades';
 
 export default function StudentSubjectsPage() {
     const navigate = useNavigate();
-    const [students] = useState(createStudentExamples());
-    const [subjects] = useState(createSubjectExamples());
-    // Symulacja zalogowanego ucznia
-    const currentUser = students[0];
+    const { user } = useAuth();
+    const [subjects, setSubjects] = useState([]);
+    const [grades, setGrades] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!user) return;
+            try {
+                const [subjectsRes, gradesRes] = await Promise.all([
+                    subjectsApi.getAll(),
+                    gradesApi.getByStudent(user.id)
+                ]);
+                setSubjects(subjectsRes.data);
+                setGrades(gradesRes.data);
+            } catch (error) {
+                console.error("Failed to fetch data", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, [user]);
 
     const subjectsData = useMemo(() => {
-        if (!currentUser) return [];
         return subjects.map(subject => {
-            const grades = currentUser.getGradesBySubject(subject.id);
-            const values = grades.map(g => g.value);
+            const subjectGrades = grades.filter(g => g.subject_id === subject.id);
+            const values = subjectGrades.map(g => parseFloat(g.value));
             const avg = values.length > 0
                 ? values.reduce((a, b) => a + b, 0) / values.length
                 : 0;
@@ -28,7 +48,7 @@ export default function StudentSubjectsPage() {
                 average: avg
             };
         });
-    }, [currentUser, subjects]);
+    }, [subjects, grades]);
 
     const getAverageColor = (avg) => {
         if (avg >= 5) return 'text-green-600 dark:text-green-400';
@@ -47,49 +67,54 @@ export default function StudentSubjectsPage() {
                         <h2 className="mb-8 text-2xl font-bold text-gray-900 dark:text-white">
                             Przedmioty i średnie
                         </h2>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {subjectsData.map((data) => (
-                                <div
-                                    key={data.id}
-                                    className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800/50"
-                                >
-                                    <div className="flex items-start justify-between">
-                                        <div>
-                                            <h3 className="font-semibold text-gray-900 dark:text-white">
-                                                {data.name}
-                                            </h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                Ocen: {data.count}
+                        {isLoading ? (
+                            <div className="flex justify-center p-8">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D0BB95]"></div>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                {subjectsData.map((data) => (
+                                    <div
+                                        key={data.id}
+                                        className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800/50"
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <h3 className="font-semibold text-gray-900 dark:text-white">
+                                                    {data.name}
+                                                </h3>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    Ocen: {data.count}
+                                                </p>
+                                            </div>
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#D0BB95]/10">
+                                                <span className="material-symbols-outlined text-[#D0BB95]">
+                                                    book
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                Średnia
+                                            </p>
+                                            <p
+                                                className={`text-3xl font-bold ${getAverageColor(
+                                                    data.average
+                                                )}`}
+                                            >
+                                                {data.average.toFixed(2)}
                                             </p>
                                         </div>
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#D0BB95]/10">
-                                            <span className="material-symbols-outlined text-[#D0BB95]">
-                                                book
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            Średnia
-                                        </p>
-                                        <p
-                                            className={`text - 3xl font - bold ${getAverageColor(
-                                                data.average
-                                            )
-                                                } `}
+                                        <button
+                                            onClick={() => navigate('/student/grades')}
+                                            className="mt-4 w-full rounded-lg bg-[#D0BB95]/10 px-3 py-2 text-sm font-medium text-[#D0BB95] hover:bg-[#D0BB95]/20"
                                         >
-                                            {data.average.toFixed(2)}
-                                        </p>
+                                            Szczegóły
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={() => navigate('/student/grades')}
-                                        className="mt-4 w-full rounded-lg bg-[#D0BB95]/10 px-3 py-2 text-sm font-medium text-[#D0BB95] hover:bg-[#D0BB95]/20"
-                                    >
-                                        Szczegóły
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </main>

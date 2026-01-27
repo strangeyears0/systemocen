@@ -26,9 +26,6 @@
       - combobox [ref=e30]:
         - option "Matematyka" [selected]
         - option "Fizyka"
-        - option "Informatyka"
-        - option "Historia"
-        - option "Polski"
       - generic [ref=e31]:
         - generic [ref=e32]:
           - generic [ref=e33]:
@@ -36,20 +33,22 @@
             - paragraph [ref=e35]: Twoje oceny
           - generic [ref=e36]:
             - paragraph [ref=e37]: Średnia
-            - paragraph [ref=e38]: "0.00"
+            - paragraph [ref=e38]: "4.50"
         - generic [ref=e39]:
           - heading "Oceny" [level=3] [ref=e40]
-          - paragraph [ref=e42]: Brak ocen
-        - generic [ref=e43]:
-          - heading "Statystyka" [level=3] [ref=e44]
-          - generic [ref=e45]:
-            - generic [ref=e46]:
-              - paragraph [ref=e47]: Liczba ocen
-              - paragraph [ref=e48]: "0"
-            - generic [ref=e49]:
-              - paragraph [ref=e50]: Najwyższa
-              - paragraph [ref=e51]: "0"
-            - generic [ref=e52]:
-              - paragraph [ref=e53]: Najniższa
-              - paragraph [ref=e54]: "0"
+          - generic [ref=e41]:
+            - generic "Sprawdzian" [ref=e42]: "5"
+            - generic "Kartkówka" [ref=e43]: "4"
+        - generic [ref=e44]:
+          - heading "Statystyka" [level=3] [ref=e45]
+          - generic [ref=e46]:
+            - generic [ref=e47]:
+              - paragraph [ref=e48]: Liczba ocen
+              - paragraph [ref=e49]: "2"
+            - generic [ref=e50]:
+              - paragraph [ref=e51]: Najwyższa
+              - paragraph [ref=e52]: "5"
+            - generic [ref=e53]:
+              - paragraph [ref=e54]: Najniższa
+              - paragraph [ref=e55]: "4"
 ```

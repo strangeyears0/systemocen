@@ -24,44 +24,36 @@
       - generic [ref=e24]: Wyloguj
   - main [ref=e25]:
     - generic [ref=e26]:
-      - heading "Dodaj Przedmiot" [level=1] [ref=e27]
+      - heading "Przedmioty" [level=1] [ref=e27]
       - button "notifications" [ref=e29] [cursor=pointer]:
         - generic [ref=e30]: notifications
     - generic [ref=e34]:
       - generic [ref=e35]:
-        - generic [ref=e36]:
-          - generic [ref=e37]: Nazwa przedmiotu
-          - textbox "np. Matematyka" [ref=e38]: Chemia
-        - generic [ref=e39]:
-          - generic [ref=e40]: Opis (opcjonalnie)
-          - textbox "np. Nauka matematyki" [active] [ref=e41]: Podstawy chemii organicznej
-        - button "Dodaj Przedmiot" [ref=e42] [cursor=pointer]
-      - generic [ref=e43]:
-        - heading "Lista przedmiotów" [level=3] [ref=e44]
-        - list [ref=e45]:
-          - listitem [ref=e46]:
-            - generic [ref=e47]:
-              - text: Matematyka
-              - paragraph [ref=e48]: Nauka matematyki
-            - button "Usuń" [ref=e49] [cursor=pointer]
-          - listitem [ref=e50]:
-            - generic [ref=e51]:
-              - text: Fizyka
-              - paragraph [ref=e52]: Nauka fizyki
-            - button "Usuń" [ref=e53] [cursor=pointer]
-          - listitem [ref=e54]:
+        - heading "Moje przedmioty" [level=2] [ref=e36]
+        - generic [ref=e37]:
+          - generic: search
+          - searchbox "Szukaj przedmiotu..." [ref=e38]
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - generic [ref=e42]:
+              - generic [ref=e44]: book
+              - generic [ref=e45]:
+                - heading "Matematyka" [level=3] [ref=e46]
+                - paragraph [ref=e47]: 25 uczniów
+                - paragraph [ref=e48]: "Naucz.: Jan Nauczyciel"
+            - button "close" [ref=e49] [cursor=pointer]:
+              - generic [ref=e50]: close
+          - button "Szczegóły" [ref=e52] [cursor=pointer]
+        - generic [ref=e53]:
+          - generic [ref=e54]:
             - generic [ref=e55]:
-              - text: Informatyka
-              - paragraph [ref=e56]: Nauka informatyki
-            - button "Usuń" [ref=e57] [cursor=pointer]
-          - listitem [ref=e58]:
-            - generic [ref=e59]:
-              - text: Historia
-              - paragraph [ref=e60]: Nauka historii
-            - button "Usuń" [ref=e61] [cursor=pointer]
-          - listitem [ref=e62]:
-            - generic [ref=e63]:
-              - text: Polski
-              - paragraph [ref=e64]: Nauka języka polskiego
-            - button "Usuń" [ref=e65] [cursor=pointer]
+              - generic [ref=e57]: book
+              - generic [ref=e58]:
+                - heading "Fizyka" [level=3] [ref=e59]
+                - paragraph [ref=e60]: 20 uczniów
+                - paragraph [ref=e61]: "Naucz.: Jan Nauczyciel"
+            - button "close" [ref=e62] [cursor=pointer]:
+              - generic [ref=e63]: close
+          - button "Szczegóły" [ref=e65] [cursor=pointer]
 ```

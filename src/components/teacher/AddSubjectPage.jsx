@@ -2,30 +2,32 @@
 import { useState } from 'react';
 import Header from '../shared/Header';
 import TeacherSidebar from '../shared/TeacherSidebar';
-import { Subject, createSubjectExamples } from '../../models/Models';
+import { subjectsApi } from '../../api/subjects';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddSubjectPage() {
-    const [subjects, setSubjects] = useState(createSubjectExamples());
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const handleAdd = () => {
+    const handleAdd = async () => {
         if (name.trim()) {
-            const newSubject = new Subject(
-                Date.now(), // Simple ID generation
-                name,
-                1, // teacherId
-                description,
-                0 // initial student count
-            );
-            setSubjects([...subjects, newSubject]);
-            setName('');
-            setDescription('');
+            setIsLoading(true);
+            try {
+                await subjectsApi.create({
+                    name,
+                    description
+                });
+                // Navigate back to subjects list on success
+                navigate('/teacher/subjects');
+            } catch (error) {
+                console.error("Failed to create subject", error);
+                alert("Wystąpił błąd przy tworzeniu przedmiotu.");
+            } finally {
+                setIsLoading(false);
+            }
         }
-    };
-
-    const handleDelete = (subjectId) => {
-        setSubjects(subjects.filter((s) => s.id !== subjectId));
     };
 
     return (
@@ -46,6 +48,7 @@ export default function AddSubjectPage() {
                                     onKeyPress={(e) => e.key === 'Enter' && handleAdd()}
                                     className="w-full rounded-lg border border-gray-300 p-3 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                     placeholder="np. Matematyka"
+                                    disabled={isLoading}
                                 />
                             </div>
                             <div>
@@ -57,40 +60,20 @@ export default function AddSubjectPage() {
                                     onChange={(e) => setDescription(e.target.value)}
                                     className="w-full rounded-lg border border-gray-300 p-3 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                     placeholder="np. Nauka matematyki"
+                                    disabled={isLoading}
                                 />
                             </div>
                             <button
                                 onClick={handleAdd}
-                                className="w-full bg-[#D0BB95] text-white px-5 py-3 rounded-lg hover:bg-[#c9ad86] font-medium"
+                                disabled={isLoading || !name.trim()}
+                                className="w-full bg-[#D0BB95] text-white px-5 py-3 rounded-lg hover:bg-[#c9ad86] font-medium disabled:opacity-50 disabled:cursor-not-allowed flex justify-center"
                             >
-                                Dodaj Przedmiot
+                                {isLoading ? (
+                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                                ) : (
+                                    "Dodaj Przedmiot"
+                                )}
                             </button>
-                        </div>
-                        <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
-                            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-                                Lista przedmiotów
-                            </h3>
-                            <ul className="space-y-2">
-                                {subjects.map((subject) => (
-                                    <li
-                                        key={subject.id}
-                                        className="flex justify-between items-start p-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg"
-                                    >
-                                        <div className="flex-1">
-                                            <span className="text-gray-900 dark:text-white font-medium">{subject.name}</span>
-                                            {subject.description && (
-                                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{subject.description}</p>
-                                            )}
-                                        </div>
-                                        <button
-                                            onClick={() => handleDelete(subject.id)}
-                                            className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm ml-4"
-                                        >
-                                            Usuń
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
                     </div>
                 </div>
